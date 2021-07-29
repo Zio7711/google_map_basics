@@ -10,6 +10,7 @@ import {
 import { useState } from 'react';
 import Geocode from 'react-geocode';
 import { Descriptions } from 'antd';
+import AutoComplete from 'react-google-autocomplete';
 
 Geocode.setApiKey('AIzaSyBSiONJOQ8YPQ-hcoVG54976JFY15jiNb4');
 
@@ -103,6 +104,31 @@ const App = () => {
     });
   };
 
+  const onPlaceSelected = (place) => {
+    const address = place.formatted_address,
+      addressArray = place.address_components,
+      city = this.getCity(addressArray),
+      area = this.getArea(addressArray),
+      state = this.getState(addressArray),
+      latValue = place.geometry.location.lat(),
+      lngValue = place.geometry.location.lng();
+
+    setState({
+      address: address ? address : '',
+      area: area ? area : '',
+      city: city ? city : '',
+      state: state ? state : '',
+      markerPosition: {
+        lat: latValue,
+        lng: lngValue,
+      },
+      mapPosition: {
+        lat: latValue,
+        lng: lngValue,
+      },
+    });
+  };
+
   const MapWithAMarker = withScriptjs(
     withGoogleMap((props) => (
       <GoogleMap
@@ -124,9 +150,22 @@ const App = () => {
             <div>hello</div>
           </InfoWindow>
         </Marker>
+
+        <AutoComplete
+          style={{
+            width: '100%',
+            height: '40px',
+            paddingLeft: '16px',
+            marginTop: '2px',
+            marginBottom: '2rem',
+          }}
+          onPlaceSelected={onPlaceSelected}
+          types={['(regions)']}
+        />
       </GoogleMap>
     ))
   );
+  const googleApiKey = process.env.KEY;
 
   return (
     <div style={{ oadding: '1rem', margin: '0 auto', maxWidth: 1000 }}>
@@ -139,7 +178,7 @@ const App = () => {
       </Descriptions>
 
       <MapWithAMarker
-        googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSiONJOQ8YPQ-hcoVG54976JFY15jiNb4"
+        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${googleApiKey}`}
         loadingElement={<div style={{ height: `100%` }} />}
         containerElement={<div style={{ height: `400px` }} />}
         mapElement={<div style={{ height: `100%` }} />}
