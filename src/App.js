@@ -1,4 +1,5 @@
 import './App.css';
+
 import {
   InfoWindow,
   withScriptjs,
@@ -11,8 +12,11 @@ import { useState } from 'react';
 import Geocode from 'react-geocode';
 import { Descriptions } from 'antd';
 import AutoComplete from 'react-google-autocomplete';
+import apiKey from './apiKey';
 
-Geocode.setApiKey('AIzaSyBSiONJOQ8YPQ-hcoVG54976JFY15jiNb4');
+require('dotenv').config();
+
+Geocode.setApiKey(apiKey);
 
 const getCity = (addressArray) => {
   let city = '';
@@ -152,6 +156,7 @@ const App = () => {
         </Marker>
 
         <AutoComplete
+          apiKey={apiKey}
           style={{
             width: '100%',
             height: '40px',
@@ -165,7 +170,6 @@ const App = () => {
       </GoogleMap>
     ))
   );
-  const googleApiKey = process.env.KEY;
 
   return (
     <div style={{ oadding: '1rem', margin: '0 auto', maxWidth: 1000 }}>
@@ -178,7 +182,7 @@ const App = () => {
       </Descriptions>
 
       <MapWithAMarker
-        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${googleApiKey}`}
+        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${apiKey}`}
         loadingElement={<div style={{ height: `100%` }} />}
         containerElement={<div style={{ height: `400px` }} />}
         mapElement={<div style={{ height: `100%` }} />}
